@@ -11,7 +11,7 @@ class ActiviteEvenementDurableController {
         $this->db = $database->getConnection();
     }
 
-    // CREATE - Ajouter une nouvelle activité/événement
+    
     public function create($data) {
         try {
             $query = "INSERT INTO " . $this->table . " 
@@ -20,7 +20,7 @@ class ActiviteEvenementDurableController {
             
             $stmt = $this->db->prepare($query);
             
-            // Bind des paramètres
+            
             $stmt->bindParam(':nom', $data['nom']);
             $stmt->bindParam(':description', $data['description']);
             $stmt->bindParam(':type', $data['type']);
@@ -46,7 +46,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // READ - Récupérer toutes les activités/événements
+   
     public function getAll() {
         try {
             $query = "SELECT * FROM " . $this->table . " ORDER BY date_debut DESC";
@@ -76,7 +76,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // READ - Récupérer une activité/événement par ID
+    
     public function getById($id) {
         try {
             $query = "SELECT * FROM " . $this->table . " WHERE id = :id";
@@ -106,7 +106,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // READ - Récupérer par type (activité ou événement)
+    
     public function getByType($type) {
         try {
             $query = "SELECT * FROM " . $this->table . " WHERE type = :type ORDER BY date_debut DESC";
@@ -137,7 +137,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // UPDATE - Mettre à jour une activité/événement
+    
     public function update($id, $data) {
         try {
             $query = "UPDATE " . $this->table . " 
@@ -148,7 +148,7 @@ class ActiviteEvenementDurableController {
             
             $stmt = $this->db->prepare($query);
             
-            // Bind des paramètres
+            
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':nom', $data['nom']);
             $stmt->bindParam(':description', $data['description']);
@@ -174,7 +174,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // DELETE - Supprimer une activité/événement
+   
     public function delete($id) {
         try {
             $query = "DELETE FROM " . $this->table . " WHERE id = :id";
@@ -195,7 +195,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // Récupérer les activités/événements à venir
+    
     public function getUpcoming() {
         try {
             $query = "SELECT * FROM " . $this->table . " 

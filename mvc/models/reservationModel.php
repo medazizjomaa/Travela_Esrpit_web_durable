@@ -15,7 +15,7 @@ class Reservation
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // ✅ Pour afficher les erreurs SQL
     }
 
-    // 🔹 Ajouter une réservation
+    
 public function addReservation(Reservation $res) {
         try {
             $sql = "INSERT INTO reservation (idclient, id_dest, date_res, type_res, nbr_personnes)

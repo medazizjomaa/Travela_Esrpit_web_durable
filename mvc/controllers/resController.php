@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../DBConnection.php';
 require_once __DIR__ . '/../models/reservationModel.php';
 
-// ✅ Import PHPMailer classes
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -38,7 +38,7 @@ class ReservationController
                 $connection = new DBConnection();
                 $db = $connection->getConnection();
 
-                // ✅ Get destination ID
+
                 $nomDestination = trim($_POST['destination']);
                 $stmt = $db->prepare("SELECT id_dest FROM destination WHERE nom_dest = :nom_dest");
                 $stmt->execute([':nom_dest' => $nomDestination]);
@@ -50,7 +50,7 @@ class ReservationController
 
                 $idDest = $dest['id_dest'];
 
-                // ✅ Create Reservation
+                
                 $reservation = new Reservation();
                 $reservation->setIdClient($idClient);
                 $reservation->setIdDest($idDest);
@@ -59,30 +59,30 @@ class ReservationController
                 $reservation->setNbrPersonnes($_POST['nbr_personne']);
 
                 if ($this->model->addReservation($reservation)) {
-                    // ✅ Reservation added successfully
+                    
 
-                    // --- Prepare Email ---
+                    -
                     $destinationName = htmlspecialchars($nomDestination);
                     $dateReservation = htmlspecialchars($_POST['date_reservation']);
-                    $userEmail = $_SESSION['mailclient'] ?? 'jomaaazize@gmail.com'; // fallback
+                    $userEmail = $_SESSION['mailclient'] ?? 'jomaaazize@gmail.com'; 
                     $userName = $_SESSION['nomclient'] ?? 'Client';
 
                     $mail = new PHPMailer(true);
                     try {
-                        // Server settings
+                        
                         $mail->isSMTP();
                         $mail->Host = 'smtp.gmail.com';
                         $mail->SMTPAuth = true;
-                        $mail->Username = 'jomaaazize@gmail.com'; // ✅ your sender email
-                        $mail->Password = 'nxgecfojesvunzlf';     // ⚠ Replace with your Google App Password
+                        $mail->Username = 'jomaaazize@gmail.com'; 
+                        $mail->Password = 'nxgecfojesvunzlf';     
                         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                         $mail->Port = 587;
 
-                        // Recipients
+                        
                         $mail->setFrom('jomaaazize@gmail.com', 'Travela');
                         $mail->addAddress($userEmail, $userName);
 
-                        // Content
+                       
                         $mail->isHTML(true);
                         $mail->Subject = 'Confirmation de votre réservation - Travela';
                         $mail->Body = "
@@ -167,7 +167,7 @@ class ReservationController
     }
 }
 
-// ✅ Handle actions
+
 $controller = new ReservationController();
 
 if (isset($_GET['action'])) {

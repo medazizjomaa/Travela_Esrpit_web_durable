@@ -11,7 +11,7 @@ class ActiviteEvenementDurable {
     private $image_url;
     private $video_url;
 
-    // Constructeur
+    
     public function __construct($id = null, $nom = '', $description = '', $type = '', $lieu = '', $date_debut = null, $date_fin = null, $responsable = '', $image_url = null, $video_url = null) {
         $this->id = $id;
         $this->nom = $nom;
@@ -25,7 +25,7 @@ class ActiviteEvenementDurable {
         $this->video_url = $video_url;
     }
 
-    // Getters
+    
     public function getId() { return $this->id; }
     public function getNom() { return $this->nom; }
     public function getDescription() { return $this->description; }
@@ -37,7 +37,7 @@ class ActiviteEvenementDurable {
     public function getImageUrl() { return $this->image_url; }
     public function getVideoUrl() { return $this->video_url; }
 
-    // Setters
+   
     public function setId($id) { $this->id = $id; }
     public function setNom($nom) { $this->nom = $nom; }
     public function setDescription($description) { $this->description = $description; }

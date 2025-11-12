@@ -10,8 +10,6 @@ class DestinationController
         $database = new DBConnection();
         $this->db = $database->getConnection();
     }
-
-    // 🔹 Ajouter une destination
     public function addDestination(Destination $dest)
     {
         $query = "INSERT INTO destination (nom_dest, prix, imageD)
@@ -22,8 +20,6 @@ class DestinationController
         $stmt->bindValue(':imageD', $dest->getImage());
         return $stmt->execute();
     }
-
-    // 🔹 Récupérer toutes les destinations
     public function getAllDestinations()
     {
         $stmt = $this->db->prepare("SELECT * FROM destination");
@@ -31,7 +27,7 @@ class DestinationController
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // 🔹 Récupérer une seule destination
+
     public function getDestinationById($id)
     {
         $stmt = $this->db->prepare("SELECT * FROM destination WHERE id_dest = :id");
@@ -40,7 +36,7 @@ class DestinationController
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // 🔹 Supprimer une destination
+
     public function deleteDestination($id)
     {
         $stmt = $this->db->prepare("DELETE FROM destination WHERE id_dest = :id");
@@ -48,7 +44,7 @@ class DestinationController
         return $stmt->execute();
     }
 
-    // 🔹 Modifier une destination
+
     public function updateDestination(Destination $dest)
     {
         $query = "UPDATE destination SET nom_dest=:nom_dest, prix=:prix, imageD=:imageD WHERE id_dest=:id_dest";
@@ -59,7 +55,7 @@ class DestinationController
         $stmt->bindValue(':imageD', $dest->getImage());
         return $stmt->execute();
     }
-    // 🔹 Modifier une destination par ID (pour formulaire)
+
 public function updateDestinationById($id_dest, $nom_dest, $prix, $imageD)
 {
     $query = "UPDATE destination SET nom_dest=:nom_dest, prix=:prix, imageD=:imageD WHERE id_dest=:id_dest";

@@ -1,6 +1,5 @@
 <?php
 session_start();
-// Correction des chemins - ajustez selon votre structure réelle
 require_once(__DIR__ . "/../DBConnection.php");
 require_once(__DIR__ . "/../models/Client.php");
 
@@ -22,9 +21,9 @@ class UnifiedClientController {
             exit();
         }
     }
-    // ... à ajouter dans la classe UnifiedClientController
+    
 
-// 🔹 Récupérer tous les clients (pour la liste admin)
+
     public function getAllClients() {
         $query = "SELECT idclient, nomclient, prenomclient, mailclient FROM client";
         $stmt = $this->db->prepare($query);
@@ -32,7 +31,7 @@ class UnifiedClientController {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-// 🔹 Mettre à jour un client (pour le Back-Office)
+
     public function updateClientAdmin($idclient, $nomclient, $prenomclient, $mailclient)
     {
     $query = "UPDATE client SET nomclient = :nom, prenomclient = :prenom, mailclient = :email WHERE idclient = :id";
@@ -44,14 +43,13 @@ class UnifiedClientController {
     return $stmt->execute();
     }
 
-// 🔹 Supprimer un client (pour le Back-Office)
     public function deleteClientAdmin($idclient)
     {
     $stmt = $this->db->prepare("DELETE FROM client WHERE idclient = :id");
     $stmt->bindParam(':id', $idclient);
     return $stmt->execute();
     }
-    // Inscription client
+    
     public function inscrireClient() {
         if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'register') {
             $nom = isset($_POST["nom"]) ? trim(htmlspecialchars($_POST["nom"])) : "";
@@ -73,7 +71,6 @@ class UnifiedClientController {
                 header("Location: /travela/mvc/views/frontOffice/register.php");
                 exit();
             } else {
-                // 🔹 Password complexity check
                 $pattern = "/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[,;:!:'&_]).{8,}$/";
                 if (!preg_match($pattern, $pass)) {
                     $_SESSION['error'] = "⚠️ Le mot de passe doit contenir au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spécial (, ; : ! : ' &_).";
@@ -122,7 +119,6 @@ class UnifiedClientController {
         }
     }
 
-    // Connexion client
     public function connecterClient() {
         if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'login') {
             $email = isset($_POST['mailclient']) ? trim(htmlspecialchars($_POST['mailclient'])) : '';
@@ -148,8 +144,6 @@ class UnifiedClientController {
 
                 if ($stmt->rowCount() === 1) {
                     $clientData = $stmt->fetch(PDO::FETCH_ASSOC);
-                    
-                    // Vérifier le mot de passe hashé
                     if (password_verify($motdepasse, $clientData['motdepasse'])) {
                         session_regenerate_id(true);
                         
@@ -158,8 +152,6 @@ class UnifiedClientController {
                         $_SESSION['prenomclient'] = htmlspecialchars($clientData['prenomclient']);
                         $_SESSION['mailclient'] = htmlspecialchars($clientData['mailclient']);
                         $_SESSION['connecte'] = true;
-
-                        // Rediriger vers la page de confirmation de connexion
                         header("Location: /travela/mvc/views/frontOffice/index.php");
                         exit();
                     }
@@ -178,10 +170,9 @@ class UnifiedClientController {
         }
     }
 
-    // Mise à jour du profil
+    
     public function mettreAJourProfil() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_profile') {
-            // Vérifier si l'utilisateur est connecté
             if (!isset($_SESSION['idclient'])) {
                 header("Location: /travela/mvc/views/frontOffice/login_client.php");
                 exit();
@@ -191,8 +182,6 @@ class UnifiedClientController {
             $nomclient = $_POST['nomclient'] ?? '';
             $prenomclient = $_POST['prenomclient'] ?? '';
             $mailclient = $_POST['mailclient'] ?? '';
-
-            // Valider les données
             if (empty($nomclient) || empty($prenomclient) || empty($mailclient)) {
                 $_SESSION['error'] = "Tous les champs sont obligatoires.";
                 header("Location: /travela/mvc/views/frontOffice/profil.php");
@@ -203,7 +192,6 @@ class UnifiedClientController {
                 exit();
             } else {
                 try {
-                    // Vérifier si l'email existe déjà pour un autre utilisateur
                     $queryCheck = "SELECT idclient FROM client WHERE mailclient = :email AND idclient != :id";
                     $stmtCheck = $this->db->prepare($queryCheck);
                     $stmtCheck->bindParam(':email', $mailclient);
@@ -215,8 +203,6 @@ class UnifiedClientController {
                         header("Location: /travela/mvc/views/frontOffice/profil.php");
                         exit();
                     }
-
-                    // Mise à jour dans la base de données
                     $query = "UPDATE client SET nomclient = :nom, prenomclient = :prenom, mailclient = :email WHERE idclient = :id";
                     $stmt = $this->db->prepare($query);
                     $stmt->bindParam(':nom', $nomclient);
@@ -225,7 +211,6 @@ class UnifiedClientController {
                     $stmt->bindParam(':id', $idclient);
 
                     if ($stmt->execute()) {
-                        // Mettre à jour les données dans la session
                         $_SESSION['mailclient'] = $mailclient;
                         $_SESSION['nomclient'] = $nomclient;
                         $_SESSION['prenomclient'] = $prenomclient;
@@ -243,8 +228,6 @@ class UnifiedClientController {
             }
         }
     }
-
-    // Changement de mot de passe
     public function changerMotDePasse() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'change_password') {
             if (!isset($_SESSION['idclient'])) {
@@ -266,7 +249,6 @@ class UnifiedClientController {
                 header("Location: /travela/mvc/views/frontOffice/profil.php");
                 exit();
             } else {
-                // 🔹 Password complexity check
                 $pattern = "/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[,;:!:'&_]).{8,}$/";
                 if (!preg_match($pattern, $newPassword)) {
                     $_SESSION['error'] = "Le mot de passe doit contenir au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spécial (, ; : ! : ' &_).";
@@ -319,11 +301,8 @@ class UnifiedClientController {
             }
         }
     }
-
-    // Suppression du compte client
     public function supprimerCompte() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_account') {
-            // Vérifier si l'utilisateur est connecté
             if (!isset($_SESSION['idclient'])) {
                 header("Location: /travela/mvc/views/frontOffice/login_client.php");
                 exit();
@@ -331,15 +310,12 @@ class UnifiedClientController {
 
             $idclient = $_POST['idclient'] ?? '';
             $confirmPassword = $_POST['confirm_password'] ?? '';
-
-            // Validation des données
             if (empty($idclient) || empty($confirmPassword)) {
                 $_SESSION['error'] = "Veuillez confirmer votre mot de passe.";
                 header("Location: /travela/mvc/views/frontOffice/profil.php");
                 exit();
             } else {
                 try {
-                    // Récupérer le mot de passe hashé depuis la base de données
                     $query = "SELECT motdepasse FROM client WHERE idclient = :id";
                     $stmt = $this->db->prepare($query);
                     $stmt->bindParam(':id', $idclient);
@@ -348,18 +324,13 @@ class UnifiedClientController {
                     if ($stmt->rowCount() === 1) {
                         $clientData = $stmt->fetch(PDO::FETCH_ASSOC);
                         $hashedPassword = $clientData['motdepasse'];
-
-                        // Vérifier si le mot de passe est correct
                         if (password_verify($confirmPassword, $hashedPassword)) {
-                            // Supprimer le compte de la base de données
                             $deleteQuery = "DELETE FROM client WHERE idclient = :id";
                             $deleteStmt = $this->db->prepare($deleteQuery);
                             $deleteStmt->bindParam(':id', $idclient);
 
                             if ($deleteStmt->execute()) {
-                                // Déconnexion et destruction de la session
                                 $_SESSION = array();
-                                
                                 if (ini_get("session.use_cookies")) {
                                     $params = session_get_cookie_params();
                                     setcookie(session_name(), '', time() - 42000,
@@ -396,8 +367,6 @@ class UnifiedClientController {
             }
         }
     }
-
-    // Méthode principale pour router les requêtes
     public function handleRequest() {
         if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
             switch ($_POST['action']) {
@@ -410,10 +379,7 @@ class UnifiedClientController {
             }
         }
     }
-
-    // 🔹 Méthode pour ajouter via formulaire (inscription)
     public function addFromForm($data) {
-    // Simule l'inscription sans session
     $nom = $data['nomclient'];
     $prenom = $data['prenomclient'];
     $email = $data['mailclient'];
@@ -425,12 +391,8 @@ class UnifiedClientController {
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':pass', $pass);
     return $stmt->execute();
-}
-
-// 🔹 Méthode pour mettre à jour via formulaire
+    }
 }   
-
-// Traitement des requêtes
 try {
     $controller = new UnifiedClientController();
     $controller->handleRequest();
@@ -440,9 +402,6 @@ try {
     header("Location: /travela/mvc/views/frontOffice/login_client.php");
     exit();
 }
-// ... Remplacement du bloc de traitement des requêtes à la fin du fichier
-
-// Traitement des requêtes
 try {
     $controller = new UnifiedClientController();
 

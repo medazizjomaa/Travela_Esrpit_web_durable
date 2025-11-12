@@ -10,7 +10,7 @@ class Avis {
     private $likes;
     private $userId;
 
-    // Constructeur mis à jour (avec likes et userId optionnels)
+    
     public function __construct($id = null, $nom_client = '', $email = '', $note = null, $commentaire = '', $date_avis = null, $avis_parent = null, $likes = 0, $userId = null) {
         $this->id = $id;
         $this->nom_client = $nom_client;
@@ -23,7 +23,7 @@ class Avis {
         $this->userId = $userId;
     }
 
-    // Getters
+    
     public function getId() { return $this->id; }
     public function getUserId() { return $this->userId; }
     public function getLikes() { return $this->likes; }
@@ -34,7 +34,7 @@ class Avis {
     public function getDateAvis() { return $this->date_avis; }
     public function getAvisParent() { return $this->avis_parent; }
 
-    // Setters
+    
     public function setId($id) { $this->id = $id; }
     public function setUserId($userId) { $this->userId = $userId; }
     public function setLikes($likes) { $this->likes=$likes;}

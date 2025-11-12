@@ -7,7 +7,7 @@ class ImpactEcologique {
     private $co2_total;
     private $date_calcul;
 
-    // Constructeur
+    
     public function __construct($transport, $distance, $voyageurs, $hebergement) {
         $this->transport = $transport;
         $this->distance = $distance;
@@ -15,7 +15,7 @@ class ImpactEcologique {
         $this->hebergement = $hebergement;
     }
 
-    // -------------------- GETTERS --------------------
+    
     public function getTransport() { return $this->transport; }
     public function getDistance() { return $this->distance; }
     public function getVoyageurs() { return $this->voyageurs; }
@@ -23,7 +23,7 @@ class ImpactEcologique {
     public function getCO2Total() { return $this->co2_total; }
     public function getDateCalcul() { return $this->date_calcul; }
 
-    // -------------------- SETTERS --------------------
+    
     public function setTransport($transport) { $this->transport = $transport; }
     public function setDistance($distance) { $this->distance = $distance; }
     public function setVoyageurs($voyageurs) { $this->voyageurs = $voyageurs; }

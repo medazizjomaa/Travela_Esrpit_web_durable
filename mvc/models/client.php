@@ -1,6 +1,6 @@
 <?php
 class Client {
-    // Attributs
+    
     private $idclient;
     private $nomclient;
     private $prenomclient;
@@ -8,7 +8,7 @@ class Client {
     private $motdepasse;
     private $db; // connexion à la base
 
-    // Constructeur flexible
+    
     public function __construct($db, $nomclient = null, $prenomclient = null, $mailclient = null, $motdepasse = null) {
         $this->db = $db;
         
@@ -26,7 +26,7 @@ class Client {
         }
     }
 
-    // GETTERS
+    
     public function getIdClient() {
         return $this->idclient;
     }
@@ -47,7 +47,7 @@ class Client {
         return $this->motdepasse;
     }
 
-    // SETTERS
+    
     public function setIdClient($id) {
         $this->idclient = $id;
     }

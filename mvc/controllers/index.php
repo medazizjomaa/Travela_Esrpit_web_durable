@@ -2,10 +2,10 @@
 require_once("ImpactController.php");
 
 
-// Création du contrôleur
+
 $controller = new ImpactController();
 
-// Gestion des actions
+
 $action = isset($_GET['action']) ? $_GET['action'] : 'formulaire';
 
 switch($action) {

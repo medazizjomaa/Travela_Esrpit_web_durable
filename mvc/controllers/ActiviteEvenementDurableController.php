@@ -11,7 +11,7 @@ class ActiviteEvenementDurableController {
         $this->db = $database->getConnection();
     }
 
-    // CREATE - Ajouter une nouvelle activité/événement
+   
     public function create($data) {
         try {
             $query = "INSERT INTO " . $this->table . " 
@@ -20,12 +20,12 @@ class ActiviteEvenementDurableController {
             
             $stmt = $this->db->prepare($query);
             
-            // Bind des paramètres
+            
             $stmt->bindParam(':nom', $data['nom']);
             $stmt->bindParam(':description', $data['description']);
             $stmt->bindParam(':type', $data['type']);
             $stmt->bindParam(':lieu', $data['lieu']);
-            // Correction pour s'assurer que les dates/heures sont bien formatées
+            
             $stmt->bindParam(':date_debut', $data['date_debut']);
             $stmt->bindParam(':date_fin', $data['date_fin']);
             $stmt->bindParam(':responsable', $data['responsable']);
@@ -47,15 +47,14 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // READ - Récupérer toutes les activités/événements
-    // 🚨 CORRECTION : Retourne des tableaux associatifs pour la vue.
+    
     public function getAll() {
         try {
             $query = "SELECT * FROM " . $this->table . " ORDER BY date_debut DESC";
             $stmt = $this->db->prepare($query);
             $stmt->execute();
             
-            // Retourne un tableau simple des données de la BD (plus facile à utiliser dans la vue PHP)
+            
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
             
         } catch (PDOException $e) {
@@ -64,7 +63,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // READ - Récupérer une activité/événement par ID (garde le retour d'objet pour les autres usages)
+    
     public function getById($id) {
         try {
             $query = "SELECT * FROM " . $this->table . " WHERE id = :id";
@@ -74,7 +73,7 @@ class ActiviteEvenementDurableController {
             
             if ($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                // Retourne un objet 'ActiviteEvenementDurable'
+                
                 return new ActiviteEvenementDurable(
                     $row['id'],
                     $row['nom'],
@@ -95,7 +94,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // READ - Récupérer par type (activité ou événement) (garde le retour d'objet pour les autres usages)
+    
     public function getByType($type) {
         try {
             $query = "SELECT * FROM " . $this->table . " WHERE type = :type ORDER BY date_debut DESC";
@@ -126,7 +125,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // UPDATE - Mettre à jour une activité/événement
+   
     public function update($id, $data) {
         try {
             $query = "UPDATE " . $this->table . " 
@@ -137,7 +136,7 @@ class ActiviteEvenementDurableController {
             
             $stmt = $this->db->prepare($query);
             
-            // Bind des paramètres
+
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':nom', $data['nom']);
             $stmt->bindParam(':description', $data['description']);
@@ -163,7 +162,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // DELETE - Supprimer une activité/événement
+    
     public function delete($id) {
         try {
             $query = "DELETE FROM " . $this->table . " WHERE id = :id";
@@ -184,7 +183,7 @@ class ActiviteEvenementDurableController {
         }
     }
 
-    // Récupérer les activités/événements à venir (garde le retour d'objet pour les autres usages)
+    
     public function getUpcoming() {
         try {
             $query = "SELECT * FROM " . $this->table . " 
@@ -216,23 +215,23 @@ class ActiviteEvenementDurableController {
         }
     }
     
-    // 🔹 Méthode pour ajouter via formulaire
+    
     public function addFromForm($data) {
         return $this->create($data);
     }
 
-    // 🔹 Méthode pour mettre à jour via formulaire
+    
     public function updateFromForm($id, $data) {
         return $this->update($id, $data);
     }
 
-    // 🔹 Méthode pour supprimer via formulaire
+    
     public function deleteFromForm($id) {
         return $this->delete($id);
     }
 }
 
-// Fichier de destination pour les redirections
+
 $filename = 'lEvt.php'; 
 
 // Gestion des actions en bas du fichier
@@ -240,8 +239,7 @@ $controller = new ActiviteEvenementDurableController();
 
 if (isset($_GET['action'])) {
     if ($_GET['action'] === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Cette section était en JSON, gardons-la si vous utilisez AJAX pour l'ajout. 
-        // Si vous voulez une redirection, il faut la modifier comme delete/update ci-dessous.
+
         $data = [
             'nom' => $_POST['nom'],
             'description' => $_POST['description'],
@@ -255,7 +253,7 @@ if (isset($_GET['action'])) {
         ];
         $result = $controller->addFromForm($data);
         
-        // Redirection après ajout (si non utilisé via AJAX)
+        
         if ($result['success']) {
             echo "<script>alert('✅ Activité/événement créé !'); window.location='{$filename}';</script>";
         } else {
@@ -278,7 +276,7 @@ if (isset($_GET['action'])) {
         ];
         $result = $controller->updateFromForm($id, $data);
         
-        // 🚨 CORRECTION : Utilisation de redirection JS + alerte
+        
         if ($result['success']) {
             echo "<script>alert('✅ Activité/événement mis à jour !'); window.location='{$filename}';</script>";
         } else {
@@ -289,7 +287,7 @@ if (isset($_GET['action'])) {
     } elseif ($_GET['action'] === 'delete' && isset($_GET['id'])) {
         $result = $controller->deleteFromForm($_GET['id']);
         
-        // 🚨 CORRECTION : Utilisation de redirection JS + alerte
+       
         if ($result['success']) {
             echo "<script>alert('✅ Activité/événement supprimé !'); window.location='{$filename}';</script>";
         } else {
@@ -299,10 +297,8 @@ if (isset($_GET['action'])) {
     }
 }
 
-// 📌 Étape cruciale : Récupérer toutes les activités pour la vue
-// Si aucune action n'est demandée, cette variable sera utilisée pour afficher la liste.
+
 $activites = $controller->getAll();
 
-// Le reste du code (qui inclut la vue) est censé se trouver ici, 
-// ou vous incluez manuellement le fichier de vue (lActivites.php) après ce point.
+
 ?>
