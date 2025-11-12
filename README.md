@@ -73,8 +73,7 @@ This project was developed as part of a **group coursework** to apply web develo
 - Web browser (Chrome, Firefox…)
 ### 2️⃣ Add Data Base
 - **add this data base in your WAMP or XAMP name it travela_db**
-
-- 
+  
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- Hôte : 127.0.0.1:3306
